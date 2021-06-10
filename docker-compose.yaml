@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  sysfoo:
+    image: pkeshav/sysfoo:latest
+    ports:
+      - 9999:8080
