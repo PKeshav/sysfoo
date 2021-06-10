@@ -34,6 +34,7 @@ pipeline {
         }
 
       }
+      when { branch 'master' }
       steps {
         echo 'packaging app into a war file'
         sh 'mvn package -DskipTests'
@@ -43,6 +44,7 @@ pipeline {
 
     stage('Docker BnP') {
       agent any
+      when { branch 'master' }
       steps {
         script {
           docker.withRegistry('https://index.docker.io/v1/', 'dockerlogin') {
@@ -55,7 +57,17 @@ pipeline {
 
       }
     }
-
+    stage('Deploy to Dev') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
+      agent any
+      steps {
+        echo 'Deploying to Dev Environment with Docker Compose'
+        sh 'docker-compose up -d'
+      }
+    }
   }
   tools {
     maven 'Maven 3.6.3'
